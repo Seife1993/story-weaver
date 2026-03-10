@@ -1,26 +1,597 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TODO: Set the document title to the name of your application -->
-    <title>Lovable App</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chronicles — World-Building Stories</title>
+<meta name="description" content="Create and share visually engaging stories about fictional worlds with character bios, settings, and custom illustrations.">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <!-- TODO: Update og:title to match your application name -->
-    <meta property="og:title" content="Lovable App" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+:root {
+  --bg: hsl(36, 33%, 94%);
+  --fg: hsl(0, 0%, 10%);
+  --card: hsl(36, 27%, 89%);
+  --muted: hsl(0, 0%, 40%);
+  --border: hsl(36, 20%, 82%);
+  --primary: hsl(0, 41%, 39%);
+  --accent: hsl(150, 25%, 32%);
+  --accent-fg: hsl(36, 33%, 94%);
+  --font-display: 'Cinzel Decorative', serif;
+  --font-body: 'Lora', serif;
+  --font-ui: 'DM Sans', sans-serif;
+}
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Lovable" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); }
 
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+/* ── Navbar ── */
+.navbar {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  display: none; /* hidden on landing */
+  align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 48px; font-family: var(--font-ui); font-size: 13px;
+}
+.navbar.visible { display: flex; }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a {
+  text-decoration: none; color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.05em; cursor: pointer; padding: 4px 0;
+  border-bottom: 2px solid transparent; transition: all .2s;
+}
+.nav-links a.active { color: var(--fg); border-bottom-color: var(--fg); font-weight: 600; }
+.nav-links a:hover { color: var(--fg); }
+.nav-right { display: flex; align-items: center; gap: 0.75rem; }
+.nav-icon { width: 18px; height: 18px; color: var(--muted); cursor: pointer; }
+.avatar {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-ui); font-size: 12px; font-weight: 600; color: var(--accent-fg);
+}
+
+/* ── Landing ── */
+.page { display: none; }
+.page.active { display: block; }
+
+.landing {
+  min-height: 100vh; display: flex; flex-direction: column;
+  justify-content: center; padding: 3rem 2rem; max-width: 700px;
+}
+.landing h1 { font-family: var(--font-display); font-size: clamp(3rem, 8vw, 5rem); margin-bottom: 2rem; letter-spacing: 0.02em; }
+.color-swatches { display: flex; gap: 0.75rem; margin-bottom: 2.5rem; }
+.swatch { width: 6rem; height: 4rem; border-radius: 3px; }
+.swatch-1 { background: var(--card); }
+.swatch-2 { background: var(--fg); }
+.swatch-3 { background: var(--primary); }
+.landing .hero-text {
+  font-family: var(--font-body); font-size: clamp(1.75rem, 5vw, 3rem);
+  line-height: 1.15; margin-bottom: 1.25rem; text-wrap: balance;
+}
+.landing .sub-text {
+  font-size: 0.95rem; color: var(--muted); max-width: 420px;
+  line-height: 1.7; margin-bottom: 2.5rem;
+}
+.cta-btn {
+  font-family: var(--font-ui); font-size: 0.875rem;
+  border: 1px solid var(--fg); border-radius: 999px;
+  padding: 0.75rem 1.75rem; background: transparent; color: var(--fg);
+  cursor: pointer; transition: all .2s; width: fit-content;
+}
+.cta-btn:hover { background: var(--fg); color: var(--bg); }
+
+/* ── Explore ── */
+.explore-page { padding: 0; }
+.explore-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 2.5rem 2rem 1.5rem; max-width: 1200px; margin: 0 auto;
+}
+.explore-header h1 { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.5rem); }
+.explore-header .right { text-align: right; }
+.explore-header .right h2 { font-family: var(--font-body); font-size: 1.5rem; font-weight: 500; }
+.explore-header .right p { font-size: 0.85rem; color: var(--muted); font-family: var(--font-ui); }
+
+.story-list { max-width: 1200px; margin: 0 auto; }
+
+.story-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border-top: 1px solid var(--border); cursor: pointer; transition: background .2s;
+}
+.story-row:hover { background: hsl(36, 27%, 91%); }
+.story-left { padding: 2rem; }
+.story-arrow { color: var(--muted); margin-bottom: 0.5rem; font-size: 1.25rem; }
+.story-left h3 { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 2.25rem); margin-bottom: 1rem; }
+.story-meta { display: flex; gap: 2rem; font-family: var(--font-ui); font-size: 0.75rem; color: var(--muted); margin-bottom: 0.75rem; }
+.story-meta span { display: block; }
+.story-meta strong { color: var(--fg); display: block; margin-bottom: 2px; }
+.story-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
+.story-right img {
+  width: 100%; height: 100%; object-fit: cover; display: block; min-height: 300px;
+}
+
+/* ── Library ── */
+.library-page { padding: 0; }
+.library-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 2.5rem 2rem 1.5rem; max-width: 1200px; margin: 0 auto;
+}
+.library-header h1 { font-family: var(--font-display); font-size: clamp(2rem, 5vw, 3.5rem); }
+.library-header .right h2 { font-family: var(--font-body); font-size: 1.5rem; font-weight: 600; }
+.library-header .right p { font-size: 0.85rem; color: var(--muted); font-family: var(--font-ui); }
+
+.library-content {
+  display: grid; grid-template-columns: 1fr 1fr;
+  max-width: 1200px; margin: 0 auto; border-top: 2px solid var(--fg);
+}
+.library-list { padding: 1.5rem 2rem; }
+.library-item {
+  padding: 1.25rem 0; border-bottom: 1px solid var(--border); cursor: pointer; transition: background .15s;
+}
+.library-item:hover { background: hsl(36, 27%, 91%); margin: 0 -2rem; padding-left: 2rem; padding-right: 2rem; }
+.library-item h3 {
+  font-family: var(--font-display); font-size: 1.5rem; display: flex; align-items: center; gap: 0.75rem;
+}
+.library-item h3 .arrow { font-family: var(--font-ui); font-weight: 300; color: var(--muted); }
+.library-item .info { font-family: var(--font-ui); font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+.library-images {
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr;
+}
+.library-images img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ── Story Reading ── */
+.reading-page { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+.reading-header { border-bottom: 3px solid hsl(200, 80%, 50%); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+.reading-header h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 2.75rem); margin-bottom: 0.25rem; }
+.reading-header .meta { font-family: var(--font-ui); font-size: 0.8rem; color: var(--muted); }
+
+.reading-hero img { width: 100%; height: 350px; object-fit: cover; display: block; margin-bottom: 2rem; border-radius: 2px; }
+
+.reading-body { display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; }
+.reading-text p { font-size: 0.95rem; line-height: 1.75; margin-bottom: 1rem; }
+.reading-text .quote {
+  font-style: italic; border-left: 3px solid var(--primary);
+  padding-left: 1rem; margin: 1.25rem 0; color: var(--fg);
+}
+
+.chapter-sidebar h4 {
+  font-family: var(--font-ui); font-size: 0.8rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;
+}
+.chapter-sidebar a {
+  display: block; font-family: var(--font-ui); font-size: 0.9rem;
+  color: var(--fg); text-decoration: none; padding: 0.35rem 0; cursor: pointer;
+}
+.chapter-sidebar a.active { font-weight: 600; }
+.chapter-sidebar a .arrow-indicator { margin-left: 0.25rem; }
+
+.reading-footer {
+  display: flex; align-items: center; gap: 1.5rem; margin-top: 2.5rem;
+  padding-top: 1.5rem; border-top: 1px solid var(--border);
+  font-family: var(--font-ui); font-size: 0.8rem; color: var(--muted);
+}
+.reading-footer .icon-btn {
+  background: none; border: none; cursor: pointer; color: var(--muted);
+  display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem;
+  font-family: var(--font-ui);
+}
+.comment-section { margin-top: 1rem; font-family: var(--font-ui); font-size: 0.75rem; color: var(--muted); }
+
+.back-btn {
+  background: none; border: none; font-family: var(--font-ui); font-size: 0.85rem;
+  color: var(--muted); cursor: pointer; margin-bottom: 1rem; padding: 0;
+}
+.back-btn:hover { color: var(--fg); }
+
+/* ── Story Detail (from Explore) ── */
+.detail-page { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+.detail-left h1 { font-family: var(--font-display); font-size: 2.5rem; margin-bottom: 1rem; }
+.detail-meta { display: flex; gap: 2.5rem; font-family: var(--font-ui); font-size: 0.8rem; color: var(--muted); margin-bottom: 1.25rem; }
+.detail-meta strong { color: var(--fg); display: block; margin-bottom: 2px; }
+.detail-left .desc { font-size: 0.95rem; line-height: 1.7; color: var(--fg); margin-bottom: 2rem; }
+.detail-chapters h4 {
+  font-family: var(--font-ui); font-size: 0.75rem; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.75rem;
+}
+.chapter-link {
+  display: block; background: none; border: none; text-align: left;
+  font-family: var(--font-body); font-size: 1.1rem; color: var(--fg);
+  cursor: pointer; padding: 0.5rem 0; width: 100%;
+}
+.chapter-link:hover { color: var(--primary); }
+.chapter-link .ch-meta { font-family: var(--font-ui); font-size: 0.7rem; color: var(--muted); }
+.detail-right img { width: 100%; height: 500px; object-fit: cover; border-radius: 4px; }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .story-row { grid-template-columns: 1fr; }
+  .story-right img { height: 250px; }
+  .library-content { grid-template-columns: 1fr; }
+  .library-images { display: none; }
+  .reading-body { grid-template-columns: 1fr; }
+  .chapter-sidebar { order: -1; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .detail-right { order: -1; }
+  .detail-right img { height: 250px; }
+  .explore-header, .library-header { flex-direction: column; gap: 0.5rem; }
+  .explore-header .right, .library-header .right { text-align: left; }
+  .reading-hero img { height: 220px; }
+}
+
+/* ── Animations ── */
+.fade-in { animation: fadeIn 0.35s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+  <div class="nav-links">
+    <a onclick="navigate('library')" id="nav-library">Library</a>
+    <a onclick="navigate('explore')" id="nav-explore">Explore</a>
+  </div>
+  <div class="nav-right">
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    <div class="avatar">E</div>
+  </div>
+</nav>
+
+<!-- Landing Page -->
+<div class="page active" id="page-landing">
+  <div class="landing">
+    <h1>Chronicles</h1>
+    <div class="color-swatches">
+      <div class="swatch swatch-1"></div>
+      <div class="swatch swatch-2"></div>
+      <div class="swatch swatch-3"></div>
+    </div>
+    <p class="hero-text">Where fictional worlds come alive through collaborative storytelling</p>
+    <p class="sub-text">Create and share visually engaging stories about your favorite fictional worlds, complete with character bios, settings, and custom illustrations.</p>
+    <button class="cta-btn" onclick="navigate('explore')">Start Exploring</button>
+  </div>
+</div>
+
+<!-- Explore Page -->
+<div class="page" id="page-explore">
+  <div class="explore-page fade-in">
+    <div class="explore-header">
+      <h1>Chronicles</h1>
+      <div class="right">
+        <h2>Explore Worlds</h2>
+        <p>Discover stories from the community</p>
+      </div>
+    </div>
+    <div class="story-list" id="explore-stories"></div>
+  </div>
+</div>
+
+<!-- Library Page -->
+<div class="page" id="page-library">
+  <div class="library-page fade-in">
+    <div class="library-header">
+      <h1>Chronicles</h1>
+      <div class="right">
+        <h2>Your Worlds</h2>
+        <p id="library-count"></p>
+      </div>
+    </div>
+    <div class="library-content">
+      <div class="library-list" id="library-list"></div>
+      <div class="library-images" id="library-images"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Story Detail (from Explore) -->
+<div class="page" id="page-detail">
+  <div class="detail-page fade-in" id="detail-content"></div>
+</div>
+
+<!-- Story Reading Page -->
+<div class="page" id="page-reading">
+  <div class="reading-page fade-in" id="reading-content"></div>
+</div>
+
+<script>
+// ── Data ──
+const stories = [
+  {
+    id: "iron-and-ivy",
+    title: "Iron & Ivy",
+    author: "Julian Ashford",
+    genre: "Steampunk",
+    description: "In the walled city of Verdun, where ivy consumes steel and steam powers prayer. Lorem ipsum desum quantum dare late ect arem ipsum desum quantum dare late ect arem est lorem est lorem ipsum desum quantum dare late ect aest lorem lorem desum quantum dare late ect arem est lorem.",
+    image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=600&h=800&fit=crop",
+    isOwned: false,
+    chapters: [
+      {
+        id: "ch1", title: "The Walled Garden", wordCount: 2100, lastEdited: "Jan 10, 2024",
+        content: [
+          "The morning the iron gates opened, the city exhaled. Steam rose from the vents lining Verdun's cobblestone streets, curling around the ankles of merchants and monks alike.",
+          "Ivy had claimed half the cathedral by the time Elara arrived. She pressed her palm against the cool stone, feeling the pulse of the machinery buried beneath centuries of green.",
+          '"The gears still turn," she whispered to no one. The ivy shivered in response, as if the city itself were listening.',
+          "Below the cobblestones, the ancient mechanisms hummed their eternal song. Each gear interlocked with the next in a dance that had begun centuries before anyone alive could remember."
+        ]
+      }
+    ],
+    characters: [
+      { name: "Elara Voss", role: "Protagonist", description: "A mechanist who hears the city's heartbeat" },
+      { name: "Brother Caelum", role: "Mentor", description: "The last keeper of the steam prayers" }
+    ]
+  },
+  {
+    id: "last-beekeeper",
+    title: "The Last Beekeeper",
+    author: "Sylvia Okonkwo",
+    genre: "Science Fiction",
+    description: "When the bees returned, they brought memories of a world that never was. Lorem ipsum desum quantum dare late ect arem ipsum desum quantum dare late ect arem est lorem ipsum desum quantum dare late ect aest lorem lorem desum quantum dare late ect arem est lorem.",
+    image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=800&fit=crop",
+    isOwned: false,
+    chapters: [
+      {
+        id: "ch1", title: "The Return", wordCount: 1800, lastEdited: "Jan 8, 2024",
+        content: [
+          "The first bee appeared on a Tuesday. Not the synthetic pollinators that hummed through the agricultural domes, but a real bee—golden, fuzzy, impossibly alive.",
+          "Amara caught it in a glass jar and held it up to the light. Its wings caught the sun filtering through the dome's panels, throwing tiny rainbows across her workstation."
+        ]
+      }
+    ],
+    characters: [
+      { name: "Amara", role: "Protagonist", description: "The last person who remembers real bees" }
+    ]
+  },
+  {
+    id: "salt-and-starlight",
+    title: "Salt and Starlight",
+    author: "Julian Ashford",
+    genre: "Romance",
+    description: "A nautical romance between a lighthouse keeper and a sea witch. Lorem ipsum desum quantum dare late ect arem ipsum desum quantum dare late ect arem est lorem ipsum desum quantum dare late ect aest lorem lorem desum quantum dare late ect arem est lorem.",
+    image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=600&h=800&fit=crop",
+    isOwned: false,
+    chapters: [
+      {
+        id: "ch1", title: "The Beacon", wordCount: 1950, lastEdited: "Jan 7, 2024",
+        content: [
+          "The lighthouse had been dark for seven years when Maren climbed its stairs for the first time. Salt had eaten through the railing, and the glass at the top was so thick with brine it looked like ice.",
+          "She cleaned it anyway. Every night, she climbed. Every night, she lit the lamp. And every night, something in the water watched her back."
+        ]
+      }
+    ],
+    characters: [
+      { name: "Maren", role: "Protagonist", description: "A lighthouse keeper running from the mainland" }
+    ]
+  },
+  {
+    id: "glass-archive",
+    title: "The Glass Archive",
+    author: "You",
+    genre: "Fantasy",
+    description: "Where memory is currency and truth is printed in crystal.",
+    image: "https://images.unsplash.com/photo-1549490349-8643362247b5?w=600&h=800&fit=crop",
+    isOwned: true,
+    chapters: [
+      {
+        id: "the-forgetting", title: "The Forgetting", wordCount: 2450, lastEdited: "Jan 14, 2024",
+        content: [
+          "The morning the Archivist came for my grandmother's memories, the city held its breath. Frost etched the windows of every house in the merchant district, turning the glass into translucent lace that filtered the pale winter light.",
+          '"In Caelum, we do not die. We are merely borrowed by the Archive."',
+          "I watched from the balcony as his carriage crested the hill—black lacquer and silver filigree, drawn by six horses whose breath steamed in the cold air. The Archivist himself would not deign to visit a mere merchant's house, of course. He sent his Curators.",
+          "Grandmother sat in her chair by the fire, hands folded in her lap. She had known they were coming. We all had. The tremor in her left hand had worsened over the past month, and twice she had called me by my mother's name—my mother who had been Transcribed five years ago.",
+          '"Lirael," she said, not looking at me. "Fetch my blue shawl. The one with the silver threads."',
+          "I did not correct her. I fetched the shawl."
+        ]
+      },
+      {
+        id: "crystal-and-ink", title: "Crystal and Ink", wordCount: 1890, lastEdited: "Jan 12, 2024",
+        content: [
+          "The Crystal Hall stood at the heart of the Archive, a cathedral of glass and memory. Each pane held a lifetime—translucent sheets that hummed with the voices of the Transcribed.",
+          "I pressed my fingers against the nearest crystal. A woman's laugh echoed through my bones, followed by the smell of bread baking and the warmth of a summer that existed only in someone else's past."
+        ]
+      }
+    ],
+    characters: [
+      { name: "Lirael", role: "Narrator", description: "A merchant's granddaughter caught between duty and rebellion" },
+      { name: "The Archivist", role: "Antagonist", description: "Keeper of all memories in Caelum" }
+    ]
+  },
+  {
+    id: "the-forgetting",
+    title: "The Forgetting",
+    author: "You",
+    genre: "Fantasy",
+    description: "A chapter within The Glass Archive.",
+    image: "https://images.unsplash.com/photo-1549490349-8643362247b5?w=600&h=800&fit=crop",
+    isOwned: true,
+    chapters: [],
+    characters: []
+  },
+  {
+    id: "cartographers-war",
+    title: "Cartograph War",
+    author: "You",
+    genre: "Adventure",
+    description: "When maps become weapons, the world redraws itself.",
+    image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&h=800&fit=crop",
+    isOwned: true,
+    chapters: [
+      {
+        id: "ch1", title: "The First Line", wordCount: 1200, lastEdited: "Jan 4, 2024",
+        content: ["The map burned at the edges, but the center held. It always held."]
+      },
+      {
+        id: "ch2", title: "Borders Redrawn", wordCount: 980, lastEdited: "Jan 4, 2024",
+        content: ["When the cartographer lifted her pen, a mountain range vanished from the world."]
+      }
+    ],
+    characters: []
+  }
+];
+
+const libraryImages = [
+  "https://images.unsplash.com/photo-1549490349-8643362247b5?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400&h=400&fit=crop",
+  "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400&h=400&fit=crop"
+];
+
+let currentView = "landing";
+
+// ── Navigation ──
+function navigate(page, data) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".nav-links a").forEach(a => a.classList.remove("active"));
+
+  const navbar = document.getElementById("navbar");
+
+  if (page === "landing") {
+    navbar.classList.remove("visible");
+    document.getElementById("page-landing").classList.add("active");
+  } else {
+    navbar.classList.add("visible");
+    if (page === "explore") {
+      document.getElementById("nav-explore").classList.add("active");
+      document.getElementById("page-explore").classList.add("active");
+      renderExplore();
+    } else if (page === "library") {
+      document.getElementById("nav-library").classList.add("active");
+      document.getElementById("page-library").classList.add("active");
+      renderLibrary();
+    } else if (page === "detail") {
+      document.getElementById("nav-explore").classList.add("active");
+      document.getElementById("page-detail").classList.add("active");
+      renderDetail(data);
+    } else if (page === "reading") {
+      document.getElementById("nav-library").classList.add("active");
+      document.getElementById("page-reading").classList.add("active");
+      renderReading(data.storyId, data.chapterId);
+    }
+  }
+  currentView = page;
+  window.scrollTo(0, 0);
+}
+
+// ── Render Explore ──
+function renderExplore() {
+  const el = document.getElementById("explore-stories");
+  const publicStories = stories.filter(s => !s.isOwned && s.id !== "the-forgetting");
+  el.innerHTML = publicStories.map(s => `
+    <div class="story-row" onclick="navigate('detail', '${s.id}')">
+      <div class="story-left">
+        <div class="story-arrow">→</div>
+        <h3>${s.title}</h3>
+        <div class="story-meta">
+          <div><strong>Author</strong><span>${s.author}</span></div>
+          <div><strong>Genre</strong><span>${s.genre}</span></div>
+        </div>
+        <p class="story-desc">${s.description}</p>
+      </div>
+      <div class="story-right">
+        <img src="${s.image}" alt="${s.title}" loading="lazy">
+      </div>
+    </div>
+  `).join("");
+}
+
+// ── Render Library ──
+function renderLibrary() {
+  const owned = stories.filter(s => s.isOwned && s.id !== "the-forgetting");
+  document.getElementById("library-count").textContent = owned.length + " stories in progress";
+  const list = document.getElementById("library-list");
+  list.innerHTML = owned.map(s => `
+    <div class="library-item" onclick="navigate('reading', {storyId:'${s.id}', chapterId:'${s.chapters[0]?.id || ""}'})">
+      <h3>${s.title} <span class="arrow">→</span></h3>
+      <div class="info">${s.chapters.length} chapters<br>Last edited ${s.lastEdited || s.chapters[0]?.lastEdited || "—"}</div>
+    </div>
+  `).join("");
+
+  const imgs = document.getElementById("library-images");
+  imgs.innerHTML = libraryImages.map(src => `<img src="${src}" alt="Story art" loading="lazy">`).join("");
+}
+
+// ── Render Detail ──
+function renderDetail(storyId) {
+  const s = stories.find(x => x.id === storyId);
+  if (!s) return;
+  const el = document.getElementById("detail-content");
+  el.innerHTML = `
+    <button class="back-btn" onclick="navigate('explore')">← Back</button>
+    <div class="detail-grid">
+      <div class="detail-left">
+        <h1>${s.title}</h1>
+        <div class="detail-meta">
+          <div><strong>Author</strong>${s.author}</div>
+          <div><strong>Genre</strong>${s.genre}</div>
+        </div>
+        <p class="desc">${s.description}</p>
+        ${s.chapters.length ? `
+          <div class="detail-chapters">
+            <h4>Chapters</h4>
+            ${s.chapters.map(ch => `
+              <button class="chapter-link" onclick="event.stopPropagation(); navigate('reading', {storyId:'${s.id}', chapterId:'${ch.id}'})">
+                ${ch.title} →
+                <div class="ch-meta">${ch.wordCount} words · ${ch.lastEdited}</div>
+              </button>
+            `).join("")}
+          </div>
+        ` : ""}
+      </div>
+      <div class="detail-right">
+        <img src="${s.image}" alt="${s.title}">
+      </div>
+    </div>
+  `;
+}
+
+// ── Render Reading ──
+function renderReading(storyId, chapterId) {
+  const s = stories.find(x => x.id === storyId);
+  if (!s || !s.chapters.length) return;
+  const ch = s.chapters.find(c => c.id === chapterId) || s.chapters[0];
+  const el = document.getElementById("reading-content");
+
+  const backPage = s.isOwned ? "library" : "explore";
+
+  el.innerHTML = `
+    <button class="back-btn" onclick="navigate('${backPage}')">← Back</button>
+    <div class="reading-header">
+      <h1>${s.title}</h1>
+      <div class="meta">${s.chapters.length} chapters · Last edited ${ch.lastEdited}</div>
+    </div>
+    <div class="reading-hero">
+      <img src="${s.image}" alt="${s.title}">
+    </div>
+    <div class="reading-body">
+      <div class="reading-text">
+        ${ch.content.map(p => {
+          if (p.startsWith('"') && p.endsWith('"')) {
+            return `<p class="quote">${p}</p>`;
+          }
+          return `<p>${p}</p>`;
+        }).join("")}
+      </div>
+      <div class="chapter-sidebar">
+        <h4>Summary</h4>
+        ${s.chapters.map((c, i) => `
+          <a onclick="navigate('reading', {storyId:'${s.id}', chapterId:'${c.id}'})" class="${c.id === ch.id ? 'active' : ''}">
+            Chapter ${i + 1} ${c.id === ch.id ? '<span class="arrow-indicator">←</span>' : ''}
+          </a>
+        `).join("")}
+      </div>
+    </div>
+    <div class="reading-footer">
+      <button class="icon-btn">♡ COMMENT</button>
+    </div>
+    <div class="comment-section">
+      <p>Manu · Category · 12 min<br>
+      <em>The Concept Of Memory As Currency Is Fascinating. I Love How You've Built An Entire Economy Around It. Short But Considered How This Narrative Would Affect The Economy.</em></p>
+    </div>
+  `;
+}
+
+// Init
+navigate("landing");
+</script>
+</body>
 </html>
